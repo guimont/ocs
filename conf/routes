@@ -7,7 +7,9 @@ GET        /                    controllers.Application.customers
 GET        /run                 controllers.Application.listRun
 GET        /redis               controllers.Application.redis
 
-GET         /test               controllers.Application.test
+GET        /stub               controllers.Influx.stub
+
+GET        /test                controllers.Application.test
 
 # Map static resources from the /public folder to the /assets URL path
 GET        /assets/*file        controllers.Assets.at(path="/public", file)

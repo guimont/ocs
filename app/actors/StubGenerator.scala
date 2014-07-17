@@ -1,16 +1,19 @@
 package actors
 
-import akka.actor.Actor
-import akka.actor.Props
+import akka.actor.{ActorSystem, Actor, Props}
 import scala.concurrent.duration._
 import play.api.libs.concurrent.Akka
 import influxdb.Connector
 import models.{JobRun, IdentEngine, IdentCustomer, Message}
 import cache.MemoryCache
+import play.api.Play.current
+import scala.concurrent.ExecutionContext.Implicits.global
+
 
 
 object StubGenerator {
 
+  var counter=0
   val Tick = "tick"
   class TickActor extends Actor {
     def receive = {
@@ -18,27 +21,19 @@ object StubGenerator {
     }
   }
 
-  val tickActor = Akka.system.actorOf(Props(classOf[TickActor], this))
-  //Use system's dispatcher as ExecutionContext
-
-
-  //This will schedule to send the Tick-message
-  //to the tickActor after 0ms repeating every 50ms
-  val cancellable =
-    Akka.system.scheduler.schedule(0 milliseconds,
-      50 milliseconds,
-      tickActor,
-      Tick)
+  val system = ActorSystem("MySystem")
+  val actor = system.actorOf(Props(new TickActor), name = "actor")
+  val cancellable = system.scheduler.schedule(0 seconds, 1 seconds, actor, Tick)
 
   //This cancels further Ticks to be sent
-  cancellable.cancel()
+  //cancellable.cancel()
 
   def generateFakeMess():Message = {
-    val idc = IdentCustomer(0,"orange","parisorprod","ORPR60","orangeprod")
+    val idc = IdentCustomer(1,"orange","parisorprod","ORPR60","orangeprod")
     //val idC =MemoryCache.getId(idTest.toString)
-    val ide = IdentEngine(0, 'I', 'X')
-    val job = JobRun('T',0)
-
+    val ide = IdentEngine(1, 'I', 'X')
+    val job = JobRun('T',counter)
+    counter+=1
     Message(idc,ide,job)
   }
 

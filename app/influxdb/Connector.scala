@@ -7,6 +7,9 @@ import scala.Array
  */
 object Connector {
   private val client: Client = new Client
+  final val DB_NAME               = "ocs"
+  client.createDatabase(DB_NAME)
+  client.database = DB_NAME
 
 
   def addJobRun(mess: Message) {
@@ -21,11 +24,12 @@ object Connector {
     val jobRun = Series("JobRun",
       Array("idc","ide","status","id"),
       Array(
-        Array[Any](mess.idc.id,mess.ide.id, data.status, data.jobid)
+        Array[Any](mess.idc.id,mess.ide.id, data.status.toString, data.jobid)
       )
     )
 
-    client.writeSeries(Array(jobRun))
+    val res = client.writeSeries(Array(jobRun))
+
   }
 
 
