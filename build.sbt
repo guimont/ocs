@@ -2,6 +2,8 @@ name := "demo"
 
 version := "1.0-SNAPSHOT"
 
+resolvers += "rediscala" at "https://raw.github.com/etaty/rediscala-mvn/master/releases/"
+
 libraryDependencies ++= Seq(
   jdbc,
   anorm,
