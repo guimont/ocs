@@ -12,6 +12,17 @@ object Connector {
   client.database = DB_NAME
 
 
+  def addMessage(mess: Message) {
+    mess.data match {
+      case j:JobRun => addJobRun(mess)
+
+      case _ => {
+        return
+      }
+    }
+  }
+
+
   def addJobRun(mess: Message) {
 
     val data: JobRun = mess.data match {
