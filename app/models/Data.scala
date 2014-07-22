@@ -16,11 +16,11 @@ case class DataDay(id: Long, day: String,list: List[DataHour],dataDay: Data)
 case class DataMonth(id: Long, month: String,list: List[DataDay])
 
 
-object StubData {
+object DataS {
 
   def stubValue(i:Int):Int = {Math.abs(new Random().nextInt()%i)}
 
-  def generateList : JsValue  = {
+  def generateStubList : JsValue  = {
 
     var list = List(DataHour(0,0,Data(stubValue(16),stubValue(10),stubValue(100))))
     for(i <- 1 to 23) {

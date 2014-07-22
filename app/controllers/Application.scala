@@ -4,7 +4,7 @@ import _root_.cache.Test
 import play.api._
 import play.api.mvc._
 import play.api.libs.json.{Writes, Json, JsValue}
-import models.{DataDay, DataHour, Data, StubData}
+import models.{DataDay, DataHour, Data, DataS}
 import akka.actor.{Props, ActorSystem}
 import actors.{StartCounting, WordCountMaster}
 
@@ -19,7 +19,7 @@ object Application extends Controller {
 
   def listRun = Action {
 
-    Ok(StubData.generateList)
+    Ok(DataS.generateStubList)
   }
 
 

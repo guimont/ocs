@@ -13,7 +13,8 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.1.0" % "test",
   "com.thoughtworks.paranamer" % "paranamer" % "2.6",
   "org.scala-lang" % "scalap" % "2.9.0-1",
-  "com.etaty.rediscala" %% "rediscala" % "1.3"
+  "com.etaty.rediscala" %% "rediscala" % "1.3",
+  "com.github.nscala-time" %% "nscala-time" % "1.2.0"
 )
 
 play.Project.playScalaSettings
