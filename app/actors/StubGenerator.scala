@@ -25,7 +25,7 @@ object StubGenerator {
   val actor = system.actorOf(Props(new TickActor), name = "actor")
   val cancellable = system.scheduler.schedule(0 seconds, 1 seconds, actor, Tick)
 
-  //This cancels further Ticks to be sent
+
   //cancellable.cancel()
 
   def generateFakeMess():Message = {
@@ -35,6 +35,11 @@ object StubGenerator {
     val job = JobRun('T',counter)
     counter+=1
     Message(idc,ide,job)
+  }
+
+  def stop {
+    //This cancels further Ticks to be sent
+    cancellable.cancel()
   }
 
 }

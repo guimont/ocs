@@ -6,7 +6,7 @@ import scala.Array
 /**
  */
 object Connector {
-  private val client: Client = new Client
+  private val client: Client = new Client("localhost:8086")
   final val DB_NAME               = "ocs"
   client.createDatabase(DB_NAME)
   client.database = DB_NAME
