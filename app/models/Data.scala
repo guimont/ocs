@@ -12,8 +12,10 @@ import scala.util.Random
  */
 case class Data (run: Int, cpu: Int, memory: Int)
 case class DataHour(id: Long, hour: Int, data: Data)
-case class DataDay(id: Long, day: String,list: List[DataHour],dataDay: Data)
-case class DataMonth(id: Long, month: String,list: List[DataDay])
+case class DataDay(id: Long, day: String,list: List[DataHour], dataDay: Data)
+case class DataDaySimple(id: Long, day: String, dataDay: Data)
+case class DataMonth(id: Long, month: String, list: List[DataDay])
+case class DataMonthSimple(id: Long, month: String, list: List[DataDaySimple])
 
 
 object DataS {
@@ -35,6 +37,11 @@ object DataS {
     }
 
     return Json.toJson(DataMonth(1,"april",listM));
+  }
+
+  def serialize(data: DataMonthSimple) :JsValue = {
+
+    Json.toJson(data)
   }
 
 
@@ -63,10 +70,24 @@ object DataS {
       (JsPath \ "dataDay").write[Data]
     )(unlift(DataDay.unapply))
 
+  implicit val dataDaySimpleWrites: Writes[DataDaySimple] = (
+    (JsPath \ "id").write[Long] and
+      (JsPath \ "day").write[String] and
+      (JsPath \ "dataDay").write[Data]
+    )(unlift(DataDaySimple.unapply))
+
   implicit val dataMonthWrites: Writes[DataMonth] = (
     (JsPath \ "id").write[Long] and
       (JsPath \ "month").write[String] and
       (JsPath \ "list").write[List[DataDay]]
     )(unlift(DataMonth.unapply))
+
+
+  implicit val dataMonthSimpleWrites: Writes[DataMonthSimple] = (
+    (JsPath \ "id").write[Long] and
+      (JsPath \ "month").write[String] and
+      (JsPath \ "list").write[List[DataDaySimple]]
+    )(unlift(DataMonthSimple.unapply))
+
 
 }

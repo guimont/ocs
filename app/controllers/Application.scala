@@ -6,7 +6,7 @@ import play.api.mvc._
 import play.api.libs.json.{Writes, Json, JsValue}
 import models.{DataDay, DataHour, Data, DataS}
 import akka.actor.{Props, ActorSystem}
-import actors.{StartCounting, WordCountMaster}
+import influxdb.Connector
 
 
 object Application extends Controller {
@@ -19,7 +19,8 @@ object Application extends Controller {
 
   def listRun = Action {
 
-    Ok(DataS.generateStubList)
+    Ok(Connector.getJobRun("2014-07-01","2014-07-31"))
+    //Ok(DataS.generateStubList)
   }
 
 
@@ -30,9 +31,6 @@ object Application extends Controller {
   }
 
   def test = Action {
-    val system = ActorSystem("word-count-system")
-    val m = system.actorOf(Props[WordCountMaster], name="master")
-    m ! StartCounting("d:\\test\\", 2)
 
     Ok("ok")
   }
