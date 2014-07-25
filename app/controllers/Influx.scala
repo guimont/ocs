@@ -1,16 +1,21 @@
 package controllers
 
 import play.api.mvc.{Action, Controller}
-import actors.{StubGeneratorStat, StubGenerator}
-import influxdb.Connector
+import influxdb.{Connector}
+import stub.{StubInflux, StubGeneratorStat, StubGenerator}
 
 
 object Influx extends Controller {
 
   def stub = Action {
-    StubGenerator
-    StubGeneratorStat
+    StubGenerator.start
+    StubGeneratorStat.start
     Ok("stub")
+  }
+
+  def init = Action {
+    StubInflux.init("2014-06-25", 31)
+    Ok("init")
   }
 
   def get = Action {

@@ -8,7 +8,8 @@ GET        /run                 controllers.Application.listRun
 GET        /redis               controllers.Application.redis
 
 GET        /stub                controllers.Influx.stub
-GET        /get               controllers.Influx.get
+GET        /init                controllers.Influx.init
+GET        /get                 controllers.Influx.get
 
 GET        /test                controllers.Application.test
 

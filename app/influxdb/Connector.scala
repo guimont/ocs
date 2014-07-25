@@ -6,10 +6,10 @@ import com.github.nscala_time.time.Imports._
 import models.JobRun
 import models.Message
 import models.Data
-import influxdb.Series
-import models.DataDay
+
 import play.api.libs.json.{Json, JsValue}
 import scala.collection.mutable.ListBuffer
+
 
 /**
  */
@@ -19,14 +19,21 @@ object Connector {
   client.createDatabase(DB_NAME)
   client.database = DB_NAME
 
+  def Writer(series : Series) {
+    val res = client.writeSeries(Array(series))
+  }
+
 
   def addMessage(mess: Message) {
-    mess.data match {
-      case j:JobRun => addJobRun(mess)
-      case s:Stat => addStat(mess)
 
-      case _ => {
-        return
+    if (mess != null) { //TODO improve this cheat/shit
+      mess.data match {
+        case j:JobRun => addJobRun(mess)
+        case s:Stat => addStat(mess)
+
+        case _ => {
+          return
+        }
       }
     }
   }
@@ -62,27 +69,40 @@ object Connector {
   def getJobRun(startDate:String,endDate:String): JsValue = {
 
     val (response, err) = client.query("SELECT count(status) FROM JobRun where time > '"+startDate+"' group by time(1d) order asc")
-    //select Mean(cpu), Mean(thp) from Stat group by time(1d)
     assert(None == err)
-
     val series = response.toSeries
+
+    val (responseStat,err2) =  client.query("select Mean(cpu), Mean(memory) from Stat group by time(1d) order asc")
+    assert(None == err2)
+    val seriesStat = responseStat.toSeries
+
+
     val startDateTime = new DateTime(startDate)
 
     var listM  = new ListBuffer[DataDaySimple]()
 
 
-    val size = series(0).points.length
-    var curentSize = 0
+    val size = series(0).points.length -1
+    val sizeStat = seriesStat(0).points.length -1
+    var currentSize = 0
+    var currentSizeStat = 0
 
     var currentDay = startDateTime
     for (i <- 1 to 31) {
       var count = 0
-      val seriesDate = new DateTime(series(0).points(curentSize)(0).asInstanceOf[Double].toLong)
+      var cpu = 0
+      var mem = 0
+      val seriesDate = new DateTime(series(0).points(currentSize)(0).asInstanceOf[Double].toLong)
       if (seriesDate.dayOfMonth().equals(currentDay.dayOfMonth())) {
-         count = series(0).points(curentSize)(1).asInstanceOf[Double].toInt
-         if (curentSize < size-1) curentSize +=1
+         count = series(0).points(currentSize)(1).asInstanceOf[Double].toInt
+         if (currentSize < size) currentSize +=1
       }
-      listM +=  DataDaySimple(i, currentDay.dayOfMonth().getAsString, Data(count,0,0))
+      if (seriesDate.dayOfMonth().equals(currentDay.dayOfMonth())) {
+        cpu = seriesStat(0).points(currentSizeStat)(1).asInstanceOf[Double].toInt
+        mem = seriesStat(0).points(currentSizeStat)(2).asInstanceOf[Double].toInt
+        if (currentSizeStat < sizeStat) currentSizeStat +=1
+      }
+      listM +=  DataDaySimple(i, currentDay.dayOfMonth().getAsString, Data(count,cpu,mem))
       currentDay = startDateTime.plusDays(i)
     }
 
