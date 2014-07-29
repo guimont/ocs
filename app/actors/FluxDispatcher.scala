@@ -1,6 +1,6 @@
 package actors
 
-import akka.actor.{Props, ActorSystem}
+import akka.actor.{ActorRef, Props, ActorSystem}
 import models.Message
 
 object FluxDispatcher {
@@ -11,5 +11,13 @@ object FluxDispatcher {
 
   def send(mess: Message) {
     m ! Writer(mess)
+  }
+
+  def read(date: String) {
+    m !Reader(date)
+  }
+
+  def getDispatcher() : ActorRef = {
+    m
   }
 }

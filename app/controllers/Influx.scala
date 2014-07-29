@@ -14,7 +14,7 @@ object Influx extends Controller {
   }
 
   def init = Action {
-    StubInflux.init("2014-06-25", 31)
+    StubInflux.init("2014-07-01", 28)
     Ok("init")
   }
 
