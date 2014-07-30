@@ -14,7 +14,7 @@ import scala.collection.mutable.ListBuffer
 /**
  */
 object Connector {
-  private val client: Client = new Client(/*"localhost:8086"*/)
+  private val client: Client = new Client("188.226.240.96:8086"/*"localhost:8086"*/)
   final val DB_NAME               = "ocs"
   client.createDatabase(DB_NAME)
   client.database = DB_NAME

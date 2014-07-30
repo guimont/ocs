@@ -38,7 +38,7 @@ class FluxActorMaster extends Actor {
       println("Akka Started")
 
     case Writer(mess) =>
-      workers ! (Writer(mess))(self)
+      workers ! Writer(mess)
     case Reader(mess) =>
       workers.tell(Reader(mess),sender)
   }

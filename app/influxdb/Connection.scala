@@ -4,14 +4,13 @@ import models._
 import play.api.libs.json.JsValue
 import org.joda.time.DateTime
 import scala.collection.mutable.ListBuffer
-import influxdb.Series
-import influxdb.Series
+
 import models.Stat
 import models.DataDaySimple
 import models.JobRun
 import models.Message
 import models.Data
-import influxdb.Series
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,7 +20,7 @@ import influxdb.Series
  * To change this template use File | Settings | File Templates.
  */
 class Connection {
-  private val client: Client = new Client(/*"localhost:8086"*/)
+  private val client: Client = new Client("188.226.240.96:8086"/*"localhost:8086"*/)
   final val DB_NAME               = "ocs"
   client.createDatabase(DB_NAME)
   client.database = DB_NAME
