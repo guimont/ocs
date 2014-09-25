@@ -4,14 +4,15 @@
 
 # Home page
 GET        /                    controllers.Application.customers
-GET        /run                 controllers.Application.listRun
-GET        /redis               controllers.Application.redis
+GET        /runStub             controllers.Stub.runStub
 
-GET        /stub                controllers.Influx.stub
+
+GET        /stubInflux          controllers.Influx.stub
 GET        /init                controllers.Influx.init
-GET        /get                 controllers.Influx.get
+GET        /run                 controllers.Influx.listRun
 
-GET        /test                controllers.Application.test
+
+GET        /statusFeed          controllers.WebSockets.statusFeed()
 
 # Map static resources from the /public folder to the /assets URL path
 GET        /assets/*file        controllers.Assets.at(path="/public", file)

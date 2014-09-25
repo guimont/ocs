@@ -1,4 +1,4 @@
-
+@(list: Seq[Event])
 
 @main {
 
@@ -6,7 +6,7 @@
         <div class="row row-offcanvas row-offcanvas-left">
 
                 <!-- sidebar -->
-            <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar" role="navigation">
+            <!--div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar" role="navigation">
                 <ul class="nav">
                     <li class="active"><a href="#">Home</a></li>
                     <li><a href="#">Customers info</a></li>
@@ -20,24 +20,20 @@
                     </li>
                     <li><a href="#">Orsyp</a></li>
                 </ul>
-            </div>
+            </div-->
 
                 <!-- main area -->
-            <div class="col-xs-12 col-sm-10" style="position: inherit">
+            <div class="col-xs-12" style="position: inherit">
                 <div id="element">
                     <span id ="window">
-                        <div class="well">
+                        <div class="wellT well">
                             <span class="label label-warning">UNIV60</span>
-                            <span class="label label-default" href="">uranus</span>
-                            <span class="badge">X</span>
-                            <span class="badge">S</span>
                             <span class="label label-default">saturne</span>
                             <span class="badge">X</span>
                             <span class="badge">S</span>
-
                         </div>
                         <div class="col-lg-7">
-                            <div class="mypanel panel panel-success">
+                            <div class="mypanel panel panel-primary" >
                                 <div class="panel-heading">
                                     <i class="fa fa-bar-chart-o fa-fw" style="color:white"></i> Running metrics
                                 </div>
@@ -46,52 +42,29 @@
                                 </div>
                             </div>
 
-                            <div class="mypanel panel panel-info">
+                            <div class="mypanel panel panel-primary">
                                 <div class="panel-heading">
-                                    <i class="fa fa-bar-chart-o fa-fw"></i> Systeme information
+                                    <i class="fa fa-pie-chart fa-fw"></i> Systeme information
                                 </div>
                                 <div class="panel-body">
                                     <span id="status"></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-5">
                             <div class="mypanelR panel panel-default">
                                 <div class="panel-heading">
                                     <i class="fa fa-bell fa-fw"></i> Notification
                                 </div>
                                 <div class="panel-body">
                                     <div class="list list-group">
-                                        <a href="#" class="list list-group-item">
-                                            <i class="fa fa-tachometer fa-fw"></i> New Comment
-                                            <span class="pull-right text-muted small"><em>4 minutes ago</em>
-                                            </span>
-                                        </a>
-                                        <a href="#" class="list-group-item">
-                                            <i class="fa fa-warning fa-fw"></i> 3 New Followers
-                                            <span class="pull-right text-muted small"><em>12 minutes ago</em>
-                                            </span>
-                                        </a>
-                                        <a href="#" class="list-group-item">
-                                            <i class="fa fa-undo fa-fw"></i> Message Sent
-                                            <span class="pull-right text-muted small"><em>27 minutes ago</em>
-                                            </span>
-                                        </a>
-                                        <a href="#" class="list-group-item">
-                                            <i class="fa fa-undo fa-fw"></i> Message Sent
-                                            <span class="pull-right text-muted small"><em>27 minutes ago</em>
-                                            </span>
-                                        </a>
-                                        <a href="#" class="list-group-item">
-                                            <i class="fa fa-warning fa-fw" style="color:red"></i> 3 New Followers
-                                            <span class="pull-right text-muted small"><em>12 minutes ago</em>
-                                            </span>
-                                        </a>
-                                        <a href="#" class="list-group-item">
-                                            <i class="fa fa-undo fa-fw"></i> Message Sent
-                                            <span class="pull-right text-muted small"><em>27 minutes ago</em>
-                                            </span>
-                                        </a>
+                                        @for(part <- list) {
+                                            <a href="#" class="list list-group-item">
+                                                <i class="fa @part.typeEvent fa-fw"></i> @part.log
+                                                <span class="pull-right text-muted small"><em>@part.date</em>
+                                                </span>
+                                            </a>
+                                        }
 
                                     </div>
                                 </div>
@@ -119,84 +92,7 @@
 
                     </span>
 
-    <span id ="window">
-        <div class="well">
-            <span class="label label-warning">UNIV60</span>
-            <span class="label label-default">uranus</span>
-            <span class="badge">X</span>
-            <span class="badge">S</span>
-            <span class="label label-default">saturne</span>
-            <span class="badge">X</span>
-            <span class="badge">S</span>
 
-        </div>
-        <div class="col-lg-7">
-            <div class="mypanel panel panel-success">
-                <div class="panel-heading">
-                    <i class="fa fa-bar-chart-o fa-fw"></i> Running metrics
-                </div>
-                <div class="panel-body">
-                    <span id="kinetic"></span>
-                </div>
-            </div>
-
-            <div class="mypanel panel panel-info">
-                <div class="panel-heading">
-                    <i class="fa fa-bar-chart-o fa-fw"></i> Systeme information
-                </div>
-                <div class="panel-body">
-                    <span id="status"></span>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-5">
-            <div class="mypanelR panel panel-default">
-                <div class="panel-heading">
-                    <i class="fa fa-bell fa-fw"></i> Notification
-                </div>
-                <div class="panel-body" style="overflow-y: scroll;">
-                    <div class="list-group">
-                        <a href="#" class="list-group-item">
-                            <i class="fa fa-comment fa-fw"></i> New Comment
-                            <span class="pull-right text-muted small"><em>4 minutes ago</em>
-                            </span>
-                        </a>
-                        <a href="#" class="list-group-item">
-                            <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-                            <span class="pull-right text-muted small"><em>12 minutes ago</em>
-                            </span>
-                        </a>
-                        <a href="#" class="list-group-item">
-                            <i class="fa fa-envelope fa-fw"></i> Message Sent
-                            <span class="pull-right text-muted small"><em>27 minutes ago</em>
-                            </span>
-                        </a>
-
-                    </div>
-                </div>
-            </div>
-            <div class="wellR  well">
-                <div class="col-lg-8">
-                    <div><img src="assets/images/Linux.png" height= 64 width=64/></div>
-                    <p style="float: left">
-                <div><strong>Unbuntu 11.4</strong></div>
-                    <div>Linux 2.6.32-O42stab</div>
-                    <div>x86_64</div>
-                    <div>Ocs agent 0.1.0.121</div>
-                    </p>
-                </div>
-                <div class="col-lg-4">
-                    <img src="assets/images/ram.png" height= 64 width=64/>
-                    <p style="float: left">
-                <div></span><strong>16 CPU</strong></div>
-    <div><strong>12 GO</strong></div>
-    Intel xeon
-    </p>
-    </div>
-    </div>
-    </div>
-
-    </span>
                 </div>
 
 

@@ -1,6 +1,8 @@
 package cache
 
-
+/**
+ * cache to aglomerate data
+ */
 object MemoryCache {
 
   var index = 0

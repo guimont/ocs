@@ -1,27 +1,56 @@
 package controllers
 
 import play.api.mvc.{Action, Controller}
-import influxdb.{Connector}
-import stub.{StubInflux, StubGeneratorStat, StubGenerator}
+import stubInflux.{StubInflux, StubGeneratorStat, StubGenerator}
+
+import scala.concurrent. Await
+import akka.pattern.Patterns
+import play.api.libs.json.{JsValue}
+import actors.{Reader, FluxDispatcher}
+import akka.util.Timeout
+import scala.concurrent.duration.{FiniteDuration, Duration}
 
 
+/**
+ * Controller for influx database
+ */
 object Influx extends Controller {
 
+  final val timeout: Timeout = new Timeout(Duration.apply("30 seconds").asInstanceOf[FiniteDuration])
+
+  /**
+   * run stubInflux generation
+   * add stubInflux in influx database
+   * @return
+   */
   def stub = Action {
     StubGenerator.start
     StubGeneratorStat.start
-    Ok("stub")
+    Ok("stubInflux")
   }
 
+  /**
+   * generate a full time range of stubInflux in influx database
+   * warning: function very slow and need high cpu
+   * @return
+   */
   def init = Action {
-    StubInflux.init("2014-07-01", 28)
+    StubInflux.init("2014-09-01", 31)
     Ok("init")
   }
 
-  def get = Action {
 
-    Connector.getJobRun("2014-07-19","2014-07-17")
+  /**
+   * get run list from now - 31 days
+   * @return
+   */
+  def listRun = Action {
 
-    Ok("get")
+    val read = Patterns.ask(FluxDispatcher.getDispatcher(),Reader(models.RequestHeader(0,"2014-09-01")),timeout)
+
+    val rep = Await.result(read,timeout.duration)
+    Ok(rep.asInstanceOf[JsValue])
   }
+
 }
+

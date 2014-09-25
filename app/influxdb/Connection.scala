@@ -13,14 +13,13 @@ import models.Data
 
 
 /**
- * Created with IntelliJ IDEA.
- * User: gmo
- * Date: 28/07/14
- * Time: 16:34
- * To change this template use File | Settings | File Templates.
+ Connection class
+  Purpose is to have method to write and read data in InfluxDB
  */
+
+
 class Connection {
-  private val client: Client = new Client("188.226.240.96:8086"/*"localhost:8086"*/)
+  private val client: Client = new Client("192.168.112.158:8086"/*"188.226.240.96:8086"*//*"localhost:8086"*/)
   final val DB_NAME               = "ocs"
   client.createDatabase(DB_NAME)
   client.database = DB_NAME
@@ -55,7 +54,7 @@ class Connection {
       )
     )
 
-    val res = client.writeSeries(Array(jobRun))
+    client.writeSeries(Array(jobRun))
   }
 
   def addStat(mess: Message) {
@@ -72,13 +71,40 @@ class Connection {
   }
 
 
-  def getJobRun(startDate:String,endDate:String): JsValue = {
+  def getData(request: RequestHeader): JsValue = {
+    request.typeRequest match {
+      case it if 0==it => getJobRuns(request.date,request.date)
+      case it if 1==it => getJobRun(request.date)
+    }
+  }
+
+
+  def getJobRun(date:String) : JsValue = {
+
+    val (response, err) = client.query("SELECT count(status) FROM JobRun where time > '"+date+"'")
+    assert(None == err)
+    val series = response.toSeries
+
+    val (responseStat,err2) =  client.query("select Mean(cpu), Mean(memory) from Stat where time > '"+date+"'")
+    assert(None == err2)
+    val seriesStat = responseStat.toSeries
+
+    val count = series(0).points(0)(1).asInstanceOf[Double].toInt
+    val cpu = seriesStat(0).points(0)(1).asInstanceOf[Double]
+    val mem = seriesStat(0).points(0)(2).asInstanceOf[Double]
+
+    DataS.serialize(DataDaySimple(0, new DateTime(date).dayOfMonth().getAsString, Data(DataRun(count,0,0,0),cpu,mem)))
+
+  }
+
+
+  def getJobRuns(startDate:String,endDate:String): JsValue = {
 
     val (response, err) = client.query("SELECT count(status) FROM JobRun where time > '"+startDate+"' group by time(1d) order asc")
     assert(None == err)
     val series = response.toSeries
 
-    val (responseStat,err2) =  client.query("select Mean(cpu), Mean(memory) from Stat group by time(1d) order asc")
+    val (responseStat,err2) =  client.query("select Mean(cpu), Mean(memory) from Stat where time > '"+startDate+"' group by time(1d) order asc")
     assert(None == err2)
     val seriesStat = responseStat.toSeries
 
@@ -96,19 +122,19 @@ class Connection {
     var currentDay = startDateTime
     for (i <- 1 to 31) {
       var count = 0
-      var cpu = 0
-      var mem = 0
+      var cpu = 0.
+      var mem = 0.
       val seriesDate = new DateTime(series(0).points(currentSize)(0).asInstanceOf[Double].toLong)
       if (seriesDate.dayOfMonth().equals(currentDay.dayOfMonth())) {
         count = series(0).points(currentSize)(1).asInstanceOf[Double].toInt
         if (currentSize < size) currentSize +=1
       }
       if (seriesDate.dayOfMonth().equals(currentDay.dayOfMonth())) {
-        cpu = seriesStat(0).points(currentSizeStat)(1).asInstanceOf[Double].toInt
-        mem = seriesStat(0).points(currentSizeStat)(2).asInstanceOf[Double].toInt
+        cpu = seriesStat(0).points(currentSizeStat)(1).asInstanceOf[Double]
+        mem = seriesStat(0).points(currentSizeStat)(2).asInstanceOf[Double]
         if (currentSizeStat < sizeStat) currentSizeStat +=1
       }
-      listM +=  DataDaySimple(i, currentDay.dayOfMonth().getAsString, Data(count,cpu,mem))
+      listM +=  DataDaySimple(i, currentDay.dayOfMonth().getAsString, Data(DataRun(count,0,0,0),cpu,mem))
       currentDay = startDateTime.plusDays(i)
     }
 
