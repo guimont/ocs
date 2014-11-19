@@ -19,7 +19,7 @@ var run = [];
  */
 function load () {
     $.ajax({
-        url: 'http://frlpmdev21:9000/runStub',
+        url: '/runStub',
         type: 'GET',
         success: function(data ) {
             run = eval(data)
