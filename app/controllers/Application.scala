@@ -17,4 +17,9 @@ object Application extends Controller {
     Ok(views.html.customer(EventS.generateStubList))
   }
 
+
+  def ping = Action { implicit request =>
+    Ok("still alive")
+  }
+
 }
